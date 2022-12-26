@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:openai_suggestions/models/enums.dart';
 
+const String OPENAI_API_KEY = ''; //provide your API key here.
+
 class OpenAiHelper {
   final String _completetionApi = 'https://api.openai.com/v1/completions';
 
@@ -18,9 +20,6 @@ class OpenAiHelper {
     String query, {
     Gpt3Model engine = Gpt3Model.textDaVinci,
   }) async {
-    // OPENAI_API_KEY -> provide your open api key here.
-    String? val = Platform.environment['OPENAI_API_KEY'];
-
     final String? model = _mapGpt3Models[engine];
 
     final Map<String, dynamic> body = <String, dynamic>{
@@ -36,7 +35,7 @@ class OpenAiHelper {
     final http.Response response = await http.post(
       Uri.parse(_completetionApi),
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer $val',
+        HttpHeaders.authorizationHeader: 'Bearer $OPENAI_API_KEY',
         HttpHeaders.acceptHeader: 'application/json',
         HttpHeaders.contentTypeHeader: 'application/json',
       },
