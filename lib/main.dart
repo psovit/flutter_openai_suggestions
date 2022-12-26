@@ -82,7 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       try {
                         FocusScope.of(context).unfocus();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Getting Prompts...')),
+                          const SnackBar(
+                            content: Text('Getting Prompts...'),
+                            duration: Duration(seconds: 10),
+                          ),
                         );
 
                         final DecisionLevel dl = _forCriteria
@@ -103,7 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                         _responsesNotifier.value = responses;
                       } on OpenAiCompletionException catch (err) {
-                        print(err);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(err.message)),
                         );
@@ -121,8 +123,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (responses.isEmpty) {
                     return const SizedBox();
                   }
-                  return Column(
-                    children: List.generate(responses.length, (index) {
+                  final List<Widget> children = List.generate(
+                    responses.length,
+                    (index) {
                       final ResponseModel resp = responses[index];
                       return Container(
                         padding: const EdgeInsets.all(12),
@@ -132,7 +135,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Model Used: ${resp.languageModel}'),
-                            Text('Query: ${resp.query}'),
                             Text(
                               'Response Time (milliseconds): ${resp.responseTimeMs}',
                             ),
@@ -140,8 +142,22 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         ),
                       );
-                    }),
+                    },
                   );
+                  children.insert(
+                    0,
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        'Query: ${responses[0].query}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  );
+                  return Column(children: children);
                 },
               ),
             ],
