@@ -19,7 +19,7 @@ class Gpt3Repository extends BaseGptRepository {
   }) async {
     final bool forChoice = decisionLevel == DecisionLevel.choices;
     final String query =
-        'Suggest 9 ${forChoice ? 'options' : 'criteria'} for to be used in AHP"$decisionTitle with maximum 4 words for each suggestion"';
+        'Suggest 9 ${forChoice ? 'options' : 'criteria'} for "$decisionTitle" to be used in AHP with maximum 4 words for each suggestion';
 
     final DateTime sentTime = DateTime.now();
 
