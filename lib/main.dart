@@ -65,46 +65,55 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 10),
               const Text('For Criteria?'),
-              Checkbox(
-                value: _forCriteria,
-                onChanged: ((value) => setState(() {
-                      _forCriteria = !_forCriteria;
-                    })),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                  onPressed: () async {
-                    if (_textEditingController.text.isEmpty) {
-                      return;
-                    }
-                    try {
-                      FocusScope.of(context).unfocus();
-
-                      final DecisionLevel dl = _forCriteria
-                          ? DecisionLevel.criteria
-                          : DecisionLevel.choices;
-                      final String title = _textEditingController.text;
-                      final List<ResponseModel> responses = <ResponseModel>[];
-
-                      await Future.forEach(Gpt3Model.values, (model) async {
-                        final ResponseModel resp =
-                            await Gpt3Repository().getSuggestions(
-                          title,
-                          dl,
-                          engine: model,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Checkbox(
+                    value: _forCriteria,
+                    onChanged: ((value) => setState(() {
+                          _forCriteria = !_forCriteria;
+                        })),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_textEditingController.text.isEmpty) {
+                        return;
+                      }
+                      try {
+                        FocusScope.of(context).unfocus();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Getting Prompts...')),
                         );
 
-                        responses.add(resp);
-                      });
-                      _responsesNotifier.value = responses;
-                    } on OpenAiCompletionException catch (err) {
-                      print(err);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(err.message)),
-                      );
-                    }
-                  },
-                  child: const Text('Get Suggestions')),
+                        final DecisionLevel dl = _forCriteria
+                            ? DecisionLevel.criteria
+                            : DecisionLevel.choices;
+                        final String title = _textEditingController.text;
+                        final List<ResponseModel> responses = <ResponseModel>[];
+
+                        await Future.forEach(Gpt3Model.values, (model) async {
+                          final ResponseModel resp =
+                              await Gpt3Repository().getSuggestions(
+                            title,
+                            dl,
+                            engine: model,
+                          );
+
+                          responses.add(resp);
+                        });
+                        _responsesNotifier.value = responses;
+                      } on OpenAiCompletionException catch (err) {
+                        print(err);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(err.message)),
+                        );
+                      }
+                    },
+                    child: const Text('Get Suggestions'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
               ValueListenableBuilder(
                 valueListenable: _responsesNotifier,
                 builder: (BuildContext ctxt, List<ResponseModel> responses,
@@ -115,8 +124,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Column(
                     children: List.generate(responses.length, (index) {
                       final ResponseModel resp = responses[index];
-                      return Card(
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        color: Colors.amberAccent,
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Model Used: ${resp.languageModel}'),
                             Text('Query: ${resp.query}'),

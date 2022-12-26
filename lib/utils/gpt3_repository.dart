@@ -34,7 +34,7 @@ class Gpt3Repository extends BaseGptRepository {
       responseTimeMs: respTime,
       query: query,
       languageModel: resp['model'],
-      choices: resp['choices'],
+      choices: (resp['choices'] as List<dynamic>)[0]['text'],
     );
   }
 }
