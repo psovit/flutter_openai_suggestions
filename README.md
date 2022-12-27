@@ -10,6 +10,11 @@ Mainly, I am exploring the Completion Endpoint to ask the AI suggestions for cri
 All available 4 Lanugage Models are requested for prompt for comparison to see which model is best to use.
 The exploration is for another app [https://www.decisionmentor.app](DecisionMentor).
 
+Read full blog post on this exploration here [https://psovit.com/ranking-the-best-openai-language-models-for-accuracy-and-cost] (BlogPost)
+
 ## Getting Started
 Get Started by using your OpenAI API Key in `openai_helper.dart` file for variable `OPENAI_API_KEY`.
 Then simply `flutter run`.
+
+
+![Demo](demo.jpg)
